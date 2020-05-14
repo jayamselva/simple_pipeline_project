@@ -1,0 +1,77 @@
+pipeline 
+{
+  agent none
+  
+     stages
+	 
+	{
+	   stage('Non-parallel stage')
+	   {
+	    agent { label "master" }
+	     steps
+		 {
+		    echo "Tis will be executed first!!";
+		 
+		 
+		 }
+	   }
+	 
+      stage('do Parallel testing in System & UAT')	 
+	  {
+	   parallel {
+	   
+	   stage('System Testing')
+	   {
+	    agent { label "Remote_Node"}
+	    steps
+		 {
+		    echo "I am doing system testing in Remote Node";
+		 
+		 }
+	   }
+	   
+	   
+	    stage('UAT Testing')
+	   {
+	    agent { label "master"}
+	    steps
+		 {
+		    echo "I am doing UAT testing in Master Node";
+		 
+		 }
+	   }
+	   
+	   }
+	     
+	   }
+	   
+	   
+	  
+	}
+	 post
+	 {
+	      always
+		  {
+		    echo "This will always run";
+		   
+		  }
+	      success
+		  {
+		    echo "This will run only if successful";
+		  }
+		  failure
+		  {
+		    echo "This will run only if failure";		  
+		  }
+		  unstable
+		  {		  
+		   echo "This will run only if unstable";		  		  
+		  }
+		  changed
+		  {
+		    echo "This will run only if state is changed";		  
+		  
+		  }
+	 
+	 }
+}
